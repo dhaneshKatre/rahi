@@ -19,6 +19,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@mapbox/react-native-mapbox-gl": "^6.1.2-beta2",
     "expo": "^27.0.1",
     "firebase": "^5.2.0",
     "native-base": "^2.6.1",

@@ -1,35 +1,40 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { CoordinatorLayout, BottomSheetBehavior } from 'react-native-bottom-sheet-behavior';
+import { View, StyleSheet } from 'react-native';
 import { MapView } from 'expo';
 import * as actions from '../actions';
+import SwipeUp from './SwipeUp';
 
 class MapScreen extends Component {
     render() {
         return (
-            <CoordinatorLayout style={{flex: 1, backgroundColor: 'red'}}>
-                <MapView
-                    style={{ flex: 1 }}
-                    region={{
-                    latitude: 40.76727216,
-                    longitude: -73.99392888,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421
-                    }}/>
-                <BottomSheetBehavior
-                    peekHeight={70}
-                    hideable={false}
-                    state={BottomSheetBehavior.STATE_COLLAPSED} >
-                    <View style={{backgroundColor: '#4389f2'}}>
-                        <View style={{padding: 26}}>
-                            <Text>BottomSheetBehavior!</Text>
-                        </View>
-                        <View style={{height: 900, backgroundColor: '#fff'}} />
-                    </View>
-                </BottomSheetBehavior>
-            </CoordinatorLayout>
+            <View style={{flex: 1, flexDirection: 'column'}}>
+                <View style={[styles.map, {flex: 0.75}]}>
+                    <MapView
+                        style={{ flex: 1 }}
+                        region={{
+                            latitude: 19.2059205,
+                            longitude: 73.1867936,
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421
+                        }}/>
+                </View>
+                <View style={{flex: 0.25}}>
+                    <SwipeUp />
+                </View>
+            </View>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    map: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 150,
+    },
+  });
 
 export default connect(null, actions)(MapScreen);
