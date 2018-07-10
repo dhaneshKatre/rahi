@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Dimensions, Image, Text, Animated, TouchableOpacity } from 'react-native';
-import Interactable from 'react-native-interactable';
 import { MapView } from 'expo';
 
 const Screen = {
