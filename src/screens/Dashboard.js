@@ -1,14 +1,9 @@
 import React from 'react';
-import { Platform, View, Text, TouchableHighlight, Dimensions } from 'react-native';
+import { Platform, View, Text, TouchableNativeFeedback } from 'react-native';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import { Button, H2, Form, Item, Input, Label, Container, Content, Card, CardItem, Body, Icon } from 'native-base';
+import { Button, H2, Form, Item, Input, Label, Container, Content, Icon, H3 } from 'native-base';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-
-const Screen = {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height - 75
-  }
 
 const mapStateToProps = state => {
     return {
@@ -29,7 +24,8 @@ class Dashboard extends React.Component {
     _hideDateTimePicker = () => this.setState({ isDateTimePickerVisible: false });
 
     _handleDatePicked = (date) => {
-        alert(date);
+        date = date.toString();
+        this.props.pickerSuccess(date.substring(0, date.lastIndexOf(":")).trim())
         this._hideDateTimePicker();
     };
 
@@ -39,8 +35,7 @@ class Dashboard extends React.Component {
 
     getNowDate() {
         let date = new Date().toString();
-        date = date.substring(0, date.indexOf("GMT")).trim();
-        this.props.pickerSuccess(date);
+        this.props.pickerSuccess(date.substring(0, date.lastIndexOf(":")).trim());
     }
 
     async onPickerClicked() {
@@ -51,14 +46,20 @@ class Dashboard extends React.Component {
         if(this.state.widget === 'favourite'){
             return(
                 <Form>
-                    <Item style={{borderColor: 'transparent'}}>
-                        <Icon active name='home' />
-                        <Input placeholder="Choose location"/>
+                    <Item style={{borderColor: 'transparent', flex: 1 }}>
+                        <View style={{ alignItems: 'center', justifyContent: 'center', width: 30 }}>
+                            <Icon active name='home' />
+                        </View>
+                        <Input style={{fontFamily: 'Comfortaa', flexGrow: 1}} placeholder="Choose location" />
                     </Item>
-                    <View style={{height: 1, borderWidth: 1, borderColor: '#dedede', width: Screen.width - 75, alignSelf: 'center'}} />
+                    <View style={{ flex: 1, flexDirection: 'row', paddingLeft: 40, paddingRight: 5 }}>
+                        <View style={{ height: 1, backgroundColor: '#dedede', borderColor: '#dedede', flexGrow: 1, alignSelf: 'center' }} />
+                    </View>
                     <Item style={{borderColor: 'transparent'}}>
-                        <Icon active name='flag' />
-                        <Input placeholder="Choose location"/>
+                        <View style={{ alignItems: 'center', justifyContent: 'center', width: 30 }}>
+                            <Icon active name='flag' />
+                        </View>
+                        <Input placeholder="Choose location" style={{fontFamily: 'Comfortaa', flexGrow: 1}}/>
                     </Item>
                 </Form>
             );
@@ -75,56 +76,65 @@ class Dashboard extends React.Component {
         return (
             <Container style={styles.container}>
                 <Content>
-                    <View style={{backgroundColor: '#ffcc33'}}>
-                        <Form>
-                            <Item inlineLabel style={styles.itemStyle}>
-                                <Label style={styles.labelStyle}>From</Label>
+                    <View style={{backgroundColor: '#fbc531', borderBottomEndRadius: 10, borderBottomStartRadius: 10}}>
+                        <Form style={{ marginRight: 15 }}>
+                            <Item inlineLabel style={[styles.itemStyle,{flex: 1, flexDirection: 'row'}]}>
+                                <Label style={[styles.labelStyle, {flex: 0.25}]}>From</Label>
                                 <Input
-                                    style={styles.inputStyle}
+                                    style={[styles.inputStyle,{flex: 0.75, flexGrow: 1}]}
                                     value={this.props.from}
                                     placeholder="Choose location"
                                     onChangeText={(text) => this.props.fromChanged(text)}/>
                                 <Icon 
-                                    style={{transform: [{ rotate: '90deg'}]}} active name='swap' />
+                                    onPress={() => this.props.swipeFromTo(this.props.from, this.props.to)}
+                                    style={{transform: [{ rotate: '90deg'}], width: 30}} active name='swap' />
                             </Item>
-                            <Item inlineLabel style={styles.itemStyle}>
-                                <Label style={styles.labelStyle}>To</Label>
+                            <Item inlineLabel style={[styles.itemStyle, { paddingRight: 30 }]}>
+                                <Label style={[styles.labelStyle, {flex: 0.25}]}>To</Label>
                                 <Input 
-                                    style={styles.inputStyle}
+                                    style={[styles.inputStyle,{flex: 0.75, flexGrow: 1}]}
                                     value={this.props.to}
                                     placeholder="Choose location"
                                     onChangeText={(text) => this.props.toChanged(text)}/>
                             </Item>
-                            <Item inlineLabel style={[styles.itemStyle, {flex: 0.6}]}>
-                                <Label style={styles.labelStyle}>Departure</Label>
-                                <Text
-                                    style={{flex: 0.7}}
-                                    onPress={() => {this.onPickerClicked()}}>{this.props.dateTime}</Text>
+                            <Item style={{marginBottom: 10, flex: 1, borderColor: 'transparent', paddingVertical: 10 }}>
+                                <Item inlineLabel style={[styles.itemStyle, {flex: 7, marginTop: 0, paddingVertical: 10}]}>
+                                    <Label style={[styles.labelStyle,{flex: 0.40}]}>Departure</Label>
+                                    <Text
+                                        style={[styles.inputStyle, {flexWrap: 'nowrap', fontFamily: 'Comfortaa', marginEnd: 5, flex: 0.60}]}
+                                        onPress={() => {this.onPickerClicked()}}>{this.props.dateTime}</Text>
+                                </Item>
+                                <Item style={{flex: 1, paddingHorizontal: 5, borderColor: 'transparent'}} >
+                                    <Button primary
+                                        style={{ backgroundColor: '#003082', justifyContent: 'center', alignItems: 'center', flexGrow: 1, paddingVertical: 10 }}
+                                        onPress={() => this.getNowDate()} >
+                                        <Text style={{fontFamily: 'Comfortaa', color: '#fff'}}>Now</Text>
+                                    </Button>
+                                </Item>
                             </Item>
-                            <Item last style={{flex: 0.4}}>
-                                <Button
-                                    style={{flex: 1}}
-                                    onPress={() => this.getNowDate()}
-                                    bordered>
-                                    <Text>Now</Text>
+                            <View style={{flex: 1, marginBottom: 15, alignItems: 'center', justifyContent: 'center', paddingRight: 5}}>
+                                <Button primary style={{ width: '100%', flexGrow: 1, backgroundColor: '#003082', marginRight: 10, marginLeft: 10, alignItems: 'center', justifyContent: 'center'}}>
+                                    <H3 style={{fontFamily: 'Comfortaa_bold', color: '#fff'}}>Plan</H3>
                                 </Button>
-                            </Item>
+                            </View>
                         </Form>
                     </View>
-                    <View style={{margin: 10, backgroundColor: '#fff', borderWidth: 1, borderColor: '#dedede'}}>
+                    <View style={styles.mainFormStyle}>
                             <View style={styles.bodyStyle}>
-                                <TouchableHighlight 
-                                    underlayColor="#f1f1f1"
-                                    onPress={() => {this.setState({widget: 'favourite'});}}
-                                    style={[styles.buttonStyle, {borderBottomColor: (this.state.widget === 'favourite')?"#003082":"#fff"}]}>
-                                    <H2 style={styles.buttonTextStyle}>FAVOURITE</H2>
-                                </TouchableHighlight>
-                                <TouchableHighlight 
-                                    underlayColor="#f1f1f1"
-                                    onPress={() => {this.setState({widget: 'history'})}}
-                                    style={[styles.buttonStyle, {borderBottomColor: (this.state.widget === 'history')?"#003082":"#fff"}]}>
-                                    <H2 style={styles.buttonTextStyle}>HISTORY</H2>
-                                </TouchableHighlight>
+                                <TouchableNativeFeedback
+                                    background={TouchableNativeFeedback.SelectableBackground()}
+                                    onPress={() => {this.setState({widget: 'favourite'});}}>
+                                    <View style={[styles.buttonStyle, {borderBottomColor: (this.state.widget === 'favourite')?"#003082":"#fff"}]}>
+                                        <H2 style={styles.buttonTextStyle}>FAVOURITE</H2>
+                                    </View>
+                                </TouchableNativeFeedback>
+                                <TouchableNativeFeedback
+                                    background={TouchableNativeFeedback.SelectableBackground()}
+                                    onPress={() => {this.setState({widget: 'history'})}}>
+                                    <View style={[styles.buttonStyle, {borderBottomColor: (this.state.widget === 'history')?"#003082":"#fff"}]}>
+                                        <H2 style={styles.buttonTextStyle}>HISTORY</H2>
+                                    </View>
+                                </TouchableNativeFeedback>
                             </View>
                             {this.getWidget()}
                     </View>
@@ -143,42 +153,55 @@ class Dashboard extends React.Component {
 const styles = {
     buttonTextStyle: {
         color: '#003082',
-        fontFamily: 'Roboto_medium'
+        fontFamily: 'Comfortaa'
     },
     itemStyle: {
         backgroundColor: '#fff',
         flexDirection: 'row',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         alignItems: 'center',
-        margin: 5,
-        flex: 1
+        marginTop: 10,
+        flex: 1,
+        borderColor: 'transparent',
+        borderRadius: 3
     },
     bodyStyle: {
         flex: 1, 
         flexDirection: 'row',
     },
     labelStyle: {
-        flex: 0.3,
+        flex: 0.4,
         color: '#003082',
-        margin: 5,
-        fontWeight: 'bold'
+        paddingLeft: 9,
+        fontFamily: 'Comfortaa_bold'
     },
     inputStyle: {
-        flex: 0.7,
+        flex: 0.6,
+        fontFamily: 'Comfortaa',
         flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start'
+        justifyContent: 'flex-start'
     },
     buttonStyle: {
         flex: 0.5,
         borderBottomWidth: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        margin: 10
+        padding: 10
     },
     container: {
-        marginTop: (Platform.OS === 'android') ? 24 : 0,
-        backgroundColor: '#f0f0f0'
+        marginTop: (Platform.OS === 'android') ? 24 : 0
+    },
+    mainFormStyle: {
+        margin: 10,
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderColor: '#ddd',
+        shadowOffset: { width: 0,  height: 2 },
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        borderRadius: 5,
+        elevation: 2
     }
 }
 

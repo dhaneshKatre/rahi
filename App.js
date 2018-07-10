@@ -20,8 +20,8 @@ export default class App extends React.Component {
   async componentWillMount() {
     await Font.loadAsync({
       Ionicons: require("native-base/Fonts/Ionicons.ttf"),
-      Roboto: require("native-base/Fonts/Roboto.ttf"),
-      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
+      Comfortaa: require("./assets/comfortaa/Comfortaa-Regular.ttf"),
+      Comfortaa_bold: require("./assets/comfortaa/Comfortaa-Bold.ttf")
     });
     this.setState({loading: false});
   }
