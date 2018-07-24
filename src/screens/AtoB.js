@@ -1,23 +1,29 @@
 import React from 'react';
-import { Platform, View, Text, TouchableNativeFeedback } from 'react-native';
+import { Platform, View, Text, TouchableNativeFeedback, ActivityIndicator } from 'react-native';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Button, H2, Form, Item, Input, Label, Container, Content, Icon, H3 } from 'native-base';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
+import * as strings from '../strings';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
         from: state.journey.from,
         to: state.journey.to,
-        dateTime: state.journey.dateTime
+        dateTime: state.journey.dateTime,
+        isInfoLoading: state.journey.isInfoLoading
     }
 }
 
-class Dashboard extends React.Component {
+class AtoB extends React.Component {
     state = {
         isDateTimePickerVisible: false,
         widget: 'favourite'
     };
+
+    componentDidMount() {
+        this.getNowDate();
+    }
     
     _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
 
@@ -29,10 +35,6 @@ class Dashboard extends React.Component {
         this._hideDateTimePicker();
     };
 
-    componentDidMount() {
-        this.getNowDate();
-    }
-
     getNowDate() {
         let date = new Date().toString();
         this.props.pickerSuccess(date.substring(0, date.lastIndexOf(":")).trim());
@@ -40,6 +42,18 @@ class Dashboard extends React.Component {
 
     async onPickerClicked() {
         this._showDateTimePicker();
+    }
+
+    getButtonData() {
+        if(this.props.isInfoLoading){
+            return (
+                <View style={{flex: 1, justifyContent: 'center'}}>
+                    <ActivityIndicator size = "large" color = "#fff" />
+                </View>
+            );
+        } else {
+            return <H3 style={{fontFamily: 'Comfortaa_bold', color: '#fff'}}>{strings.GET_TRAINS}</H3>;
+        }
     }
 
     getWidget() {
@@ -50,7 +64,7 @@ class Dashboard extends React.Component {
                         <View style={{ alignItems: 'center', justifyContent: 'center', width: 30 }}>
                             <Icon active name='home' />
                         </View>
-                        <Input style={{fontFamily: 'Comfortaa', flexGrow: 1}} placeholder="Choose location" />
+                        <Input style={{fontFamily: 'Comfortaa', flexGrow: 1}} placeholder={strings.CHOOSE_LOCATION} />
                     </Item>
                     <View style={{ flex: 1, flexDirection: 'row', paddingLeft: 40, paddingRight: 5 }}>
                         <View style={{ height: 1, backgroundColor: '#dedede', borderColor: '#dedede', flexGrow: 1, alignSelf: 'center' }} />
@@ -59,7 +73,7 @@ class Dashboard extends React.Component {
                         <View style={{ alignItems: 'center', justifyContent: 'center', width: 30 }}>
                             <Icon active name='flag' />
                         </View>
-                        <Input placeholder="Choose location" style={{fontFamily: 'Comfortaa', flexGrow: 1}}/>
+                        <Input placeholder={strings.CHOOSE_LOCATION} style={{fontFamily: 'Comfortaa', flexGrow: 1}}/>
                     </Item>
                 </Form>
             );
@@ -72,6 +86,12 @@ class Dashboard extends React.Component {
         } else return null;
     }
 
+    async onGetTrainsClicked() {
+        await this.props.fetchTrains('KYN','PUNE', () => {
+            this.props.navigation.navigate('list');
+        });
+    }
+
     render() {
         return (
             <Container style={styles.container}>
@@ -79,27 +99,27 @@ class Dashboard extends React.Component {
                     <View style={{backgroundColor: '#fbc531', borderBottomEndRadius: 10, borderBottomStartRadius: 10}}>
                         <Form style={{ marginRight: 15 }}>
                             <Item inlineLabel style={[styles.itemStyle,{flex: 1, flexDirection: 'row'}]}>
-                                <Label style={[styles.labelStyle, {flex: 0.25}]}>From</Label>
+                                <Label style={[styles.labelStyle, {flex: 0.25}]}>{strings.FROM}</Label>
                                 <Input
                                     style={[styles.inputStyle,{flex: 0.75, flexGrow: 1}]}
                                     value={this.props.from}
-                                    placeholder="Choose location"
+                                    placeholder={strings.CHOOSE_LOCATION}
                                     onChangeText={(text) => this.props.fromChanged(text)}/>
                                 <Icon 
                                     onPress={() => this.props.swipeFromTo(this.props.from, this.props.to)}
                                     style={{transform: [{ rotate: '90deg'}], width: 30}} active name='swap' />
                             </Item>
                             <Item inlineLabel style={[styles.itemStyle, { paddingRight: 30 }]}>
-                                <Label style={[styles.labelStyle, {flex: 0.25}]}>To</Label>
+                                <Label style={[styles.labelStyle, {flex: 0.25}]}>{strings.TO}</Label>
                                 <Input 
                                     style={[styles.inputStyle,{flex: 0.75, flexGrow: 1}]}
                                     value={this.props.to}
-                                    placeholder="Choose location"
+                                    placeholder={strings.CHOOSE_LOCATION}
                                     onChangeText={(text) => this.props.toChanged(text)}/>
                             </Item>
                             <Item style={{marginBottom: 10, flex: 1, borderColor: 'transparent', paddingVertical: 10 }}>
                                 <Item inlineLabel style={[styles.itemStyle, {flex: 7, marginTop: 0, paddingVertical: 10}]}>
-                                    <Label style={[styles.labelStyle,{flex: 0.40}]}>Departure</Label>
+                                    <Label style={[styles.labelStyle,{flex: 0.40}]}>{strings.DEPARTURE}</Label>
                                     <Text
                                         style={[styles.inputStyle, {flexWrap: 'nowrap', fontFamily: 'Comfortaa', marginEnd: 5, flex: 0.60}]}
                                         onPress={() => {this.onPickerClicked()}}>{this.props.dateTime}</Text>
@@ -108,13 +128,15 @@ class Dashboard extends React.Component {
                                     <Button primary
                                         style={{ backgroundColor: '#003082', justifyContent: 'center', alignItems: 'center', flexGrow: 1, paddingVertical: 10 }}
                                         onPress={() => this.getNowDate()} >
-                                        <Text style={{fontFamily: 'Comfortaa', color: '#fff'}}>Now</Text>
+                                        <Text style={{fontFamily: 'Comfortaa', color: '#fff'}}>{strings.NOW}</Text>
                                     </Button>
                                 </Item>
                             </Item>
                             <View style={{flex: 1, marginBottom: 15, alignItems: 'center', justifyContent: 'center', paddingRight: 5}}>
-                                <Button primary style={{ width: '100%', flexGrow: 1, backgroundColor: '#003082', marginRight: 10, marginLeft: 10, alignItems: 'center', justifyContent: 'center'}}>
-                                    <H3 style={{fontFamily: 'Comfortaa_bold', color: '#fff'}}>Plan</H3>
+                                <Button 
+                                    onPress={() => this.onGetTrainsClicked()}
+                                    primary style={{ width: '100%', flexGrow: 1, backgroundColor: '#003082', marginRight: 10, marginLeft: 10, alignItems: 'center', justifyContent: 'center'}}>
+                                    {this.getButtonData()}
                                 </Button>
                             </View>
                         </Form>
@@ -125,14 +147,14 @@ class Dashboard extends React.Component {
                                     background={TouchableNativeFeedback.SelectableBackground()}
                                     onPress={() => {this.setState({widget: 'favourite'});}}>
                                     <View style={[styles.buttonStyle, {borderBottomColor: (this.state.widget === 'favourite')?"#003082":"#fff"}]}>
-                                        <H2 style={styles.buttonTextStyle}>FAVOURITE</H2>
+                                        <H2 style={styles.buttonTextStyle}>{strings.FAVOURITE}</H2>
                                     </View>
                                 </TouchableNativeFeedback>
                                 <TouchableNativeFeedback
                                     background={TouchableNativeFeedback.SelectableBackground()}
                                     onPress={() => {this.setState({widget: 'history'})}}>
                                     <View style={[styles.buttonStyle, {borderBottomColor: (this.state.widget === 'history')?"#003082":"#fff"}]}>
-                                        <H2 style={styles.buttonTextStyle}>HISTORY</H2>
+                                        <H2 style={styles.buttonTextStyle}>{strings.HISTORY}</H2>
                                     </View>
                                 </TouchableNativeFeedback>
                             </View>
@@ -205,4 +227,4 @@ const styles = {
     }
 }
 
-export default connect(mapStateToProps, actions)(Dashboard);
+export default connect(mapStateToProps, actions)(AtoB);

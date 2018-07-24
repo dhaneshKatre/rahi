@@ -4,3 +4,6 @@ export const FROM_CHANGED = 'from_changed';
 export const TO_CHANGED = 'to_changed';
 export const PICKER_SUCCESS = 'picker_success';
 export const SWIPE_FROM_TO = 'swipe_from_to';
+export const TRAIN_FETCH_SUCCESS = 'train_fetch_success';
+export const LOADING_CHANGED = 'loading_changed';
+export const CLEAR_DATA = 'clear_data';
