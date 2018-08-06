@@ -1,53 +1,21 @@
 import React from 'react';
-import {NavigationActions} from 'react-navigation';
-import { Platform, View, Text, TouchableNativeFeedback, ActivityIndicator } from 'react-native';
-import DateTimePicker from 'react-native-modal-datetime-picker';
+import { View, Text, TouchableNativeFeedback, ActivityIndicator } from 'react-native';
 import { Button, H2, Form, Item, Input, Label, Container, Content, Icon, H3 } from 'native-base';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as strings from '../strings';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
-        from: state.journey.from,
-        to: state.journey.to,
-        dateTime: state.journey.dateTime
+        pnr: state.journey.pnr
     }
 }
 
-class AtoB extends React.Component {
-    static navigationOptions = {
-        title: 'Train From - To'
-    }
-
+class PNRScreen extends React.Component {
     state = {
-        isDateTimePickerVisible: false,
         widget: 'favourite',
         isLoading: false
     };
-
-    componentDidMount() {
-        this.getNowDate();
-    }
-    
-    _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
-
-    _hideDateTimePicker = () => this.setState({ isDateTimePickerVisible: false });
-
-    _handleDatePicked = (date) => {
-        date = date.toString();
-        this.props.pickerSuccess(date.substring(0, date.lastIndexOf(":")).trim())
-        this._hideDateTimePicker();
-    };
-
-    getNowDate() {
-        let date = new Date().toString();
-        this.props.pickerSuccess(date.substring(0, date.lastIndexOf(":")).trim());
-    }
-
-    async onPickerClicked() {
-        this._showDateTimePicker();
-    }
 
     getButtonData() {
         if(this.state.isLoading){
@@ -57,7 +25,7 @@ class AtoB extends React.Component {
                 </View>
             );
         } else {
-            return <H3 style={{fontFamily: 'Comfortaa_bold', color: '#fff'}}>{strings.GET_TRAINS}</H3>;
+            return <H3 style={{fontFamily: 'Comfortaa_bold', color: '#fff'}}>{strings.GET_PNR}</H3>;
         }
     }
 
@@ -91,16 +59,11 @@ class AtoB extends React.Component {
         } else return null;
     }
 
-    async onGetTrainsClicked() {
+    async getPnrClicked() {
         this.setState({ isLoading: true });
-        await this.props.fetchTrains(this.props.from, this.props.to, () => {
+        await this.props.getPnr(this.props.pnr, () => {
             this.setState({ isLoading: false });
-            const navAction = NavigationActions.navigate({
-                type: 'Navigation/NAVIGATE',
-                routeName: 'list',
-                params: {}
-            });
-            this.props.appNavRef.dispatch(navAction);
+            this.props.navigation.navigate('');
         });
     }
 
@@ -110,47 +73,18 @@ class AtoB extends React.Component {
                 <Content>
                     <View style={{backgroundColor: '#fbc531', borderBottomEndRadius: 10, borderBottomStartRadius: 10}}>
                         <Form style={{ marginRight: 15 }}>
-                            <Item inlineLabel style={[styles.itemStyle,{flex: 1, flexDirection: 'row'}]}>
-                                <Label style={[styles.labelStyle, {flex: 0.25}]}>{strings.FROM}</Label>
+                            <Item inlineLabel style={[styles.itemStyle, { paddingRight: 30 }]}>
+                                <Label style={[styles.labelStyle, {flex: 0.25}]}>{strings.PNR}</Label>
                                 <Input
                                     style={[styles.inputStyle,{flex: 0.75, flexGrow: 1}]}
-                                    value={this.props.from}
-                                    placeholder={strings.CHOOSE_LOCATION}
-                                    onChangeText={(text) => this.props.fromChanged(text)}/>
-                                <TouchableNativeFeedback 
-                                    onPress={() => this.props.swipeFromTo(this.props.from, this.props.to)}
-                                    background={TouchableNativeFeedback.SelectableBackground()}>
-                                    <Icon
-                                        style={{transform: [{ rotate: '90deg'}], width: 30}} active name='swap' />
-                                </TouchableNativeFeedback>
-                            </Item>
-                            <Item inlineLabel style={[styles.itemStyle, { paddingRight: 30 }]}>
-                                <Label style={[styles.labelStyle, {flex: 0.25}]}>{strings.TO}</Label>
-                                <Input 
-                                    style={[styles.inputStyle,{flex: 0.75, flexGrow: 1}]}
                                     value={this.props.to}
-                                    placeholder={strings.CHOOSE_LOCATION}
-                                    onChangeText={(text) => this.props.toChanged(text)}/>
+                                    placeholder={strings.ENTER_PNR}
+                                    onChangeText={(text) => this.props.pnrChanged(text)}/>
                             </Item>
-                            <Item style={{marginBottom: 10, flex: 1, borderColor: 'transparent', paddingVertical: 10 }}>
-                                <Item inlineLabel style={[styles.itemStyle, {flex: 7, marginTop: 0, paddingVertical: 10}]}>
-                                    <Label style={[styles.labelStyle,{flex: 0.40}]}>{strings.DEPARTURE}</Label>
-                                    <Text
-                                        style={[styles.inputStyle, {flexWrap: 'nowrap', fontFamily: 'Comfortaa', marginEnd: 5, flex: 0.60}]}
-                                        onPress={() => {this.onPickerClicked()}}>{this.props.dateTime}</Text>
-                                </Item>
-                                <Item style={{flex: 1, paddingHorizontal: 5, borderColor: 'transparent'}} >
-                                    <Button primary
-                                        style={{ backgroundColor: '#003082', justifyContent: 'center', alignItems: 'center', flexGrow: 1, paddingVertical: 10 }}
-                                        onPress={() => this.getNowDate()} >
-                                        <Text style={{fontFamily: 'Comfortaa', color: '#fff'}}>{strings.NOW}</Text>
-                                    </Button>
-                                </Item>
-                            </Item>
-                            <View style={{flex: 1, marginBottom: 15, alignItems: 'center', justifyContent: 'center', paddingRight: 5}}>
+                            <View style={{flex: 1, marginBottom: 15, marginTop: 15, alignItems: 'center', justifyContent: 'center', paddingRight: 5}}>
                                 <Button 
                                     disabled={this.state.isLoading}
-                                    onPress={() => this.onGetTrainsClicked()}
+                                    onPress={() => this.getPnrClicked()}
                                     primary style={{ width: '100%', flexGrow: 1, backgroundColor: '#003082', marginRight: 10, marginLeft: 10, alignItems: 'center', justifyContent: 'center'}}>
                                     {this.getButtonData()}
                                 </Button>
@@ -177,12 +111,6 @@ class AtoB extends React.Component {
                             {this.getWidget()}
                     </View>
                 </Content>
-                <DateTimePicker
-                    mode="datetime"
-                    isVisible={this.state.isDateTimePickerVisible}
-                    onConfirm={this._handleDatePicked}
-                    onCancel={this._hideDateTimePicker}
-                />
             </Container>
         );
     }
@@ -204,7 +132,7 @@ const styles = {
         borderRadius: 3
     },
     bodyStyle: {
-        flex: 1, 
+        flex: 1,
         flexDirection: 'row',
     },
     labelStyle: {
@@ -242,4 +170,4 @@ const styles = {
     }
 }
 
-export default connect(mapStateToProps, actions)(AtoB);
+export default connect(mapStateToProps, actions)(PNRScreen);

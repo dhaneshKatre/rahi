@@ -4,16 +4,20 @@ import {
     PICKER_SUCCESS, 
     SWIPE_FROM_TO,
     TRAIN_FETCH_SUCCESS,
-    LOADING_CHANGED,
-    CLEAR_DATA
+    CLEAR_DATA,
+    PNR_CHANGED,
+    TNO_CHANGED,
+    PNR_FETCH_SUCCESS,
+    TRAIN_INFO_SUCCESS
  } from '../actions/types';
 
 const INITIAL_STATE = {
     from: "",
     to: "",
     dateTime: "",
-    trains: [],
-    isInfoLoading: false
+    pnr: "",
+    tno: "",
+    trains: []
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -27,11 +31,19 @@ export default (state = INITIAL_STATE, action) => {
         case SWIPE_FROM_TO:
             return { ...state, from: action.payload.to, to: action.payload.from };
         case TRAIN_FETCH_SUCCESS:
-            return {...state, trains: action.payload };
-        case LOADING_CHANGED:
-            return { ...state, isInfoLoading: action.payload };
+            return { ...state, trains: action.payload };
+        case PNR_FETCH_SUCCESS: {
+            console.log(action.payload);
+        }
+        case TRAIN_INFO_SUCCESS: {
+            console.log(action.payload);
+        }
         case CLEAR_DATA:
             return { ...state, trains: [] };
+        case PNR_CHANGED:
+            return { ...state, pnr: action.payload };
+        case TNO_CHANGED:
+            return { ...state, tno: action.payload };
         default:
             return state;
     }

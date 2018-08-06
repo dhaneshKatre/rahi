@@ -1,37 +1,42 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { View, Card, Container, Content, CardItem, Left, Right, Body, Text } from 'native-base';
+import { View, Card, Container, Content, CardItem, Left, Right, Body, Text, Icon } from 'native-base';
 import 'core-js/es6/symbol'; 
 import 'core-js/fn/symbol/iterator';
 
-renderWeekRunDays = (bin) => {
-  const run = bin.split("");
-  const week = ['M','T','W','T','F','S','S'];
-  runDays = []
-  for(const i = 0; i<run.length; i++)
-    runDays.push((run[i] === '1') ? <Text key={i} style={styles.run}>{week[i]}</Text>:
-    <Text key={i} style={[styles.run,{color: '#000'}]}>{week[i]}</Text>);    
-  return runDays;
-}
+class TrainItem extends React.PureComponent {
+  constructor(props){
+    super(props);
+  }
 
-const TrainItem = ({ train }) => {
-  const {
-    train_name,
-    train_no,
-    average_speed,
+  renderWeekRunDays = (bin) => {
+    const run = bin.split("");
+    const week = ['M','T','W','T','F','S','S'];
+    runDays = []
+    for(const i = 0; i<run.length; i++)
+      runDays.push((run[i] === '1') ? <Text key={i} style={styles.run}>{week[i]}</Text>:
+      <Text key={i} style={[styles.run,{color: '#000'}]}>{week[i]}</Text>);    
+    return runDays;
+  }
+  
+  render() {
+    const {
+      train_name,
+      train_no,
+      average_speed,
+  
+      source_stn_name,
+      dstn_stn_name,
+      source_depart,
+      dstn_reach,
+  
+      travel_time,
+      distance_from_to,
+      
+      running_days
+    } = this.props.train;
 
-    source_stn_name,
-    dstn_stn_name,
-    source_depart,
-    dstn_reach,
-
-    travel_time,
-    distance_from_to,
-    
-    running_days
-  } = train;
-
-  return (
+    return (
       <Content padder>
         <Card>
             <CardItem header bordered>
@@ -41,7 +46,7 @@ const TrainItem = ({ train }) => {
                             <Text style={styles.trainInfo}>{train_name}</Text>
                             <Text style={styles.trainInfo}>({train_no})</Text>
                         </View>
-                        <View style={styles.weekView}>{renderWeekRunDays(running_days)}</View>
+                        <View style={styles.weekView}>{this.renderWeekRunDays(running_days)}</View>
                     </View>
                 </Left>
                 <Right style={{flex: 1}}>
@@ -58,7 +63,7 @@ const TrainItem = ({ train }) => {
                         <Text style={styles.trainInfo}>{source_depart}</Text>
                     </View>
                     <View style={{flex: 1}}>
-                        <Text>Arrow</Text>
+                        <Icon name="arrow-round-forward" />
                     </View>
                     <View style={{flexDirection: 'column', flex: 1}}>
                         <Text style={styles.trainInfo}>{dstn_stn_name}</Text>
@@ -80,8 +85,9 @@ const TrainItem = ({ train }) => {
             </CardItem>
         </Card>
       </Content>
-  );
-};
+    );
+  }
+}
 
 const styles = {
     trainInfo: {

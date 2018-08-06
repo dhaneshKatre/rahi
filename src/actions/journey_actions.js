@@ -4,8 +4,11 @@ import {
     PICKER_SUCCESS, 
     SWIPE_FROM_TO,
     TRAIN_FETCH_SUCCESS,
-    LOADING_CHANGED,
-    CLEAR_DATA
+    CLEAR_DATA,
+    PNR_CHANGED,
+    TNO_CHANGED,
+    PNR_FETCH_SUCCESS,
+    TRAIN_INFO_SUCCESS
 } from './types';
 import axios from 'axios';
 
@@ -37,12 +40,20 @@ export const pickerSuccess = (text) => {
     };
 };
 
-const infoLoadChange = (dispatch, val) => {
-    dispatch({
-        type: LOADING_CHANGED,
-        payload: val
-    });
-}
+
+export const pnrChanged = (text) => {
+    return {
+        type: PNR_CHANGED,
+        payload: text
+    };
+};
+
+export const tnoChanged = (text) => {
+    return {
+        type: TNO_CHANGED,
+        payload: text
+    };
+};
 
 export const clearData = () => {
     return {
@@ -59,13 +70,48 @@ const trainsFetchedSuccess = (dispatch, info) => {
 
 export const fetchTrains = (from, to, nav) => async dispatch => {
     try{
-        infoLoadChange(dispatch, true);
         const config = {headers: {'Content-type': 'application/json'}};
         let res = await axios.post('https://railwayapi.herokuapp.com/getAllTrains', { from: from, to: to }, config);
-        infoLoadChange(dispatch, false);
         trainsFetchedSuccess(dispatch, res.data.trains);
         nav();
     } catch(e){
+        console.error(e);
+    }
+}
+
+const PNRFetchedSuccess = (dispatch, info) => {
+    dispatch({
+        type: PNR_FETCH_SUCCESS,
+        payload: info
+    });
+}
+
+export const getPnr = (pnr, nav) => async dispatch => {
+    try {
+        const config = {headers: {'Content-type': 'application/json'}};
+        let res = await axios.post('https://railwayapi.herokuapp.com/getPNR', { pnr: pnr}, config);
+        PNRFetchedSuccess(dispatch, res.data);
+        nav();
+    } catch(e){
+        console.error(e);
+    }
+}
+
+const trainFetchedSuccess = (dispatch, data) => {
+    dispatch({
+        type: TRAIN_INFO_SUCCESS,
+        payload: data
+    });
+}
+
+export const getTrain = (train_no, nav) => async dispatch => {
+    try {
+        const config = {headers: {'Content-type': 'application/json'}};
+        let res = await axios.post('https://railwayapi.herokuapp.com/getTrain', { train_no: train_no }, config);
+        console.log(res);
+        trainFetchedSuccess(dispatch, res.data);
+        nav();
+    } catch (e) {
         console.error(e);
     }
 }

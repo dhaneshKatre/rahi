@@ -1,27 +1,57 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Button, StyleSheet } from 'react-native';
+import { Button, Icon, Text, View } from 'native-base';
 import * as actions from '../actions';
+import * as strings from '../strings';
 
 class AuthScreen extends Component {
+    static navigationOptions = {
+        header: null
+    }
+
+    onLoginPressed = () => {
+        this.props.facebookLogin();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(!nextProps.token)
+            alert("Login failed or cancelled!");
+        else this.onAuthComplete(nextProps);
+    }
+
+    componentDidMount() {
+        this.onAuthComplete(this.props);
+    }
+
+    onAuthComplete(props) {
+        if(props.token)
+            this.props.navigation.navigate('dashboard');
+    }
+
     render() {
         return (
             <View style={styles.container}>
-                <Button
-                    onPress = {this.props.facebookLogin}
-                    title = "Login with Facebook!"/>
+                <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                    <Button iconLeft primary
+                        onPress = {this.onLoginPressed}>
+                        <Icon name = 'logo-facebook' />
+                        <Text>{strings.FB_LOGIN}</Text>
+                    </Button>
+                </View>
             </View>
         );
     }
 }
 
-const styles = StyleSheet.create({
+const styles = {
     container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
+        alignItems: 'center',
+        justifyContent: 'center'
     }
-  });
+};
 
-export default connect(null, actions)(AuthScreen);
+function mapStateToProps({ auth }) {
+    return { token: auth.token };
+}
+
+export default connect(mapStateToProps, actions)(AuthScreen);
