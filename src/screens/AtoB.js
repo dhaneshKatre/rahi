@@ -95,12 +95,7 @@ class AtoB extends React.Component {
         this.setState({ isLoading: true });
         await this.props.fetchTrains(this.props.from, this.props.to, () => {
             this.setState({ isLoading: false });
-            const navAction = NavigationActions.navigate({
-                type: 'Navigation/NAVIGATE',
-                routeName: 'list',
-                params: {}
-            });
-            this.props.appNavRef.dispatch(navAction);
+            this.props.navigation.navigate('list');
         });
     }
 

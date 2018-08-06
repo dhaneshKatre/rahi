@@ -1,8 +1,40 @@
 import React from 'react';
-import { Platform } from 'react-native';
-import { View, Card, Container, Content, CardItem, Left, Right, Body, Text, Icon } from 'native-base';
+import { Platform, PixelRatio } from 'react-native';
+import { View, Card, Content, CardItem, Left, Right, Body, Text, Icon } from 'native-base';
 import 'core-js/es6/symbol'; 
 import 'core-js/fn/symbol/iterator';
+import * as strings from '../strings';
+
+normalize = (size) => {
+  if(Platform.OS === 'ios')
+    return Math.round(PixelRatio.roundToNearestPixel(size))
+  else
+    return Math.round(PixelRatio.roundToNearestPixel(size)) - 2
+}
+
+const Triangle = ({run}) => {
+  return (
+  <View style={{flexDirection: 'row'}}>
+    <View style={{
+      width: 60,
+      borderBottomColor: '#dedede',
+      borderBottomWidth: 2,
+      marginBottom: 10
+    }} />
+    <View style={{
+      width: 0,
+      height: 0,
+      backgroundColor: 'transparent',
+      borderLeftWidth: 20,
+      borderLeftColor: '#dedede',
+      borderTopWidth: 10,
+      borderTopColor: 'transparent',
+      borderBottomWidth: 10,
+      borderBottomColor: 'transparent'
+    }} />
+  </View>
+  );
+}
 
 class TrainItem extends React.PureComponent {
   constructor(props){
@@ -37,49 +69,49 @@ class TrainItem extends React.PureComponent {
     } = this.props.train;
 
     return (
-      <Content padder>
+      <Content>
         <Card>
             <CardItem header bordered>
-                <Left style={{flex: 1}}>
+                <Left style={{flex: 5}}>
                     <View style={{flexDirection: 'column'}}>
                         <View style={styles.trainNameNoView}>
-                            <Text style={styles.trainInfo}>{train_name}</Text>
-                            <Text style={styles.trainInfo}>({train_no})</Text>
+                            <Text style={styles.trainNameNoInfo}>{train_name}</Text>
+                            <Text style={styles.trainNameNoInfo}>({train_no})</Text>
                         </View>
                         <View style={styles.weekView}>{this.renderWeekRunDays(running_days)}</View>
                     </View>
                 </Left>
-                <Right style={{flex: 1}}>
+                <Right style={{flex: 2}}>
                     <View style={{flexDirection: 'column'}}>
-                        <Text>Avg. Speed</Text>
-                        <Text style={styles.trainSpeed}>{average_speed} km/hr</Text>
+                        <Text>{strings.AVG_SPEED}</Text>
+                        <Text style={styles.trainSpeed}>{average_speed} {strings.KMPH}</Text>
                     </View>
                 </Right>
             </CardItem>
-            <CardItem bordered cardBody>
+            <CardItem cardBody>
                 <Body style={styles.bodyStyle}>
-                    <View style={{flexDirection: 'column', flex: 1}}>
+                    <Left style={{flexDirection: 'column' }}>
                         <Text style={styles.trainInfo}>{source_stn_name}</Text>
                         <Text style={styles.trainInfo}>{source_depart}</Text>
+                    </Left>
+                    <View>
+                        <Triangle style={{alignSelf: 'center'}} />
                     </View>
-                    <View style={{flex: 1}}>
-                        <Icon name="arrow-round-forward" />
-                    </View>
-                    <View style={{flexDirection: 'column', flex: 1}}>
+                    <Right style={{flexDirection: 'column' }}>
                         <Text style={styles.trainInfo}>{dstn_stn_name}</Text>
                         <Text style={styles.trainInfo}>{dstn_reach}</Text>
-                    </View>
+                    </Right>
                 </Body>
             </CardItem>
             <CardItem footer bordered>
                 <Left style={{flex: 1}}>
                     <View style={styles.trainNameNoView}>
-                        <Text>Total Duration: {travel_time}</Text>
+                        <Text>{strings.TOTAL_DUR} {travel_time}</Text>
                     </View>
                 </Left>
                 <Right style={{flex: 1}}>
                     <View style={{flexDirection: 'column'}}>
-                        <Text style={styles.trainSpeed}>Distance: {distance_from_to} km</Text>
+                        <Text style={styles.trainSpeed}>{strings.DISTANCE} {distance_from_to} km</Text>
                     </View>
                 </Right>
             </CardItem>
@@ -91,7 +123,17 @@ class TrainItem extends React.PureComponent {
 
 const styles = {
     trainInfo: {
-        marginHorizontal: 10
+      marginHorizontal: 10,
+      alignSelf: 'center',
+      fontSize: normalize(15),
+      fontWeight: 'bold'
+    },
+    trainNameNoInfo: {
+      marginHorizontal: 10,
+      alignSelf: 'center',
+    },
+    trainSpeed: {
+      alignSelf: 'center',
     },
     holder: {
       flex: 1,
@@ -99,25 +141,24 @@ const styles = {
       justifyContent: 'center'
     },
     bodyStyle: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between'
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between'
     },
     trainNameNoView: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between'
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-around'
     },
     run: {
-        color: '#0f0'
+      color: '#228B22',
+      fontWeight: 'bold'
     },
     weekView: {
-        flexDirection: 'row',
-        flex: 1,
-        justifyContent: 'space-between',
-        alignItems: 'center'
+      flexDirection: 'row',
+      flex: 1,
+      justifyContent: 'space-between',
+      alignItems: 'center'
     }
 };
 

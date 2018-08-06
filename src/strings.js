@@ -10,9 +10,14 @@ export const HISTORY = 'HISTORY';
 export const GET_TRAINS = 'Get Trains';
 
 export const ENTER_PNR = 'Enter PNR';
-export const GET_PNR = 'Get PNR status';
+export const GET_PNR = 'Get PNR Status';
 export const PNR = 'PNR';
 
 export const TRAIN_NO = 'Train No';
 export const ENTER_TNO = 'Enter Train Number';
 export const SEARCH_TRAIN = 'Search Train';
+
+export const AVG_SPEED = 'Avg. Speed';
+export const KMPH = 'km/hr';
+export const TOTAL_DUR = 'Total Duration:';
+export const DISTANCE = 'Distance:';

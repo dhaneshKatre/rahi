@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, View, Text, FlatList } from 'react-native';
+import { Text, FlatList } from 'react-native';
 import TrainItem from '../components/TrainItem';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
@@ -11,10 +11,7 @@ const mapStateToProps = (state) => {
 };
 
 class TrainList extends React.PureComponent {
-    static navigationOptions = () => {
-        tabBarVisible: false
-    }
-
+    
     constructor(props){
         super(props);
     }
@@ -22,8 +19,6 @@ class TrainList extends React.PureComponent {
     renderTrains() {
         console.log(this.props.trains)
         return this.props.trains.map((train, i) => {
-
-            // <TrainItem key={train.train_base.train_no} train={train.train_base} />
             <Text key={i}>{train.train_base.train_name}</Text>
         });
     }
