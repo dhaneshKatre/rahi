@@ -17,6 +17,10 @@ class PNRScreen extends React.Component {
         isLoading: false
     };
 
+    static navigationOptions = {
+        title: strings.PNR_TITLE
+    }
+
     getButtonData() {
         if(this.state.isLoading){
             return (

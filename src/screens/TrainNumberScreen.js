@@ -13,7 +13,7 @@ const mapStateToProps = state => {
 
 class TrainNumberScreen extends React.Component {
     static navigationOptions = {
-        title: 'Train Search',
+        title: strings.TRAIN_TITLE
     }
 
     state = {

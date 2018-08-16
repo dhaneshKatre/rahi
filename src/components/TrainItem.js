@@ -57,10 +57,10 @@ class TrainItem extends React.PureComponent {
       train_no,
       average_speed,
   
-      source_stn_name,
-      dstn_stn_name,
-      source_depart,
-      dstn_reach,
+      from_stn_name,
+      to_stn_name,
+      from_time,
+      to_time,
   
       travel_time,
       distance_from_to,
@@ -91,15 +91,15 @@ class TrainItem extends React.PureComponent {
             <CardItem cardBody>
                 <Body style={styles.bodyStyle}>
                     <Left style={{flexDirection: 'column' }}>
-                        <Text style={styles.trainInfo}>{source_stn_name}</Text>
-                        <Text style={styles.trainInfo}>{source_depart}</Text>
+                        <Text style={styles.trainInfo}>{from_stn_name}</Text>
+                        <Text style={styles.trainInfo}>{from_time}</Text>
                     </Left>
                     <View>
                         <Triangle style={{alignSelf: 'center'}} />
                     </View>
                     <Right style={{flexDirection: 'column' }}>
-                        <Text style={styles.trainInfo}>{dstn_stn_name}</Text>
-                        <Text style={styles.trainInfo}>{dstn_reach}</Text>
+                        <Text style={styles.trainInfo}>{to_stn_name}</Text>
+                        <Text style={styles.trainInfo}>{to_time}</Text>
                     </Right>
                 </Body>
             </CardItem>

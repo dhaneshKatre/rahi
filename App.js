@@ -5,12 +5,8 @@ import { Provider } from 'react-redux';
 
 import store from './src/store';
 import MainNavigator from './src/navigators/MainNavigator';
-import TrainItem from './src/components/TrainItem';
-
-console.disableYellowBox = true;
 
 export default class App extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = { loading: true };
@@ -22,7 +18,8 @@ export default class App extends React.Component {
       Comfortaa: require("./assets/comfortaa/Comfortaa-Regular.ttf"),
       Comfortaa_bold: require("./assets/comfortaa/Comfortaa-Bold.ttf"),
       Roboto: require("native-base/Fonts/Roboto.ttf"),
-      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
+      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
+      fontello: require("./assets/icons/fontello.ttf")
     });
     this.setState({loading: false});
   }
@@ -66,7 +63,6 @@ export default class App extends React.Component {
         </Provider>
       );
     }
-    
   }
 }
 

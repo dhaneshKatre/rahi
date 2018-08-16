@@ -17,7 +17,7 @@ const mapStateToProps = (state) => {
 
 class AtoB extends React.Component {
     static navigationOptions = {
-        title: 'Train From - To'
+        title: strings.ATOB_TITLE
     }
 
     state = {
@@ -108,6 +108,7 @@ class AtoB extends React.Component {
                             <Item inlineLabel style={[styles.itemStyle,{flex: 1, flexDirection: 'row'}]}>
                                 <Label style={[styles.labelStyle, {flex: 0.25}]}>{strings.FROM}</Label>
                                 <Input
+                                    autoCapitalize={'characters'}
                                     style={[styles.inputStyle,{flex: 0.75, flexGrow: 1}]}
                                     value={this.props.from}
                                     placeholder={strings.CHOOSE_LOCATION}
@@ -121,7 +122,8 @@ class AtoB extends React.Component {
                             </Item>
                             <Item inlineLabel style={[styles.itemStyle, { paddingRight: 30 }]}>
                                 <Label style={[styles.labelStyle, {flex: 0.25}]}>{strings.TO}</Label>
-                                <Input 
+                                <Input
+                                    autoCapitalize={'characters'}
                                     style={[styles.inputStyle,{flex: 0.75, flexGrow: 1}]}
                                     value={this.props.to}
                                     placeholder={strings.CHOOSE_LOCATION}
@@ -131,7 +133,8 @@ class AtoB extends React.Component {
                                 <Item inlineLabel style={[styles.itemStyle, {flex: 7, marginTop: 0, paddingVertical: 10}]}>
                                     <Label style={[styles.labelStyle,{flex: 0.40}]}>{strings.DEPARTURE}</Label>
                                     <Text
-                                        style={[styles.inputStyle, {flexWrap: 'nowrap', fontFamily: 'Comfortaa', marginEnd: 5, flex: 0.60}]}
+                                        numberOfLines={1}
+                                        style={[styles.inputStyle, {flexWrap: 'wrap', fontFamily: 'Comfortaa', marginEnd: 5, flex: 0.60}]}
                                         onPress={() => {this.onPickerClicked()}}>{this.props.dateTime}</Text>
                                 </Item>
                                 <Item style={{flex: 1, paddingHorizontal: 5, borderColor: 'transparent'}} >
